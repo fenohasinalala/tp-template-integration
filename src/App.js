@@ -6,17 +6,35 @@ import { EmployeeList } from "./components/List";
 import { Footer } from "./components/Footer";
 import { Card } from "./components/Card";
 import { faker } from "@faker-js/faker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from 'axios';
+import FormulairePut from "./formulairePut"
+import FormulairePost from "./formulairePost"
 
 function App() {
-  const employees = new Array(15).fill(null).map((_) => ({
-    name: faker.name.findName(),
-    position: faker.company.bsNoun(),
-    office: faker.address.cityName(),
-    age: faker.random.numeric(2),
-    startDate: new Date().toISOString().split("T")[0],
-    salary: faker.random.numeric(6),
-  }));
+
+  const [list, setList] = useState([]);
+  const [modif, setModif] = useState(false);
+  const [add, setAdd] = useState(false);
+  const [idSelected, setIdSelected] = useState(1);
+
+  const selectId = (value)=>{
+      setIdSelected(value);
+  }
+
+  useEffect(() => {
+    axios({
+      url: "https://jsonplaceholder.typicode.com/users"
+    })
+      .then(response => {
+        setList(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [setList]);
+  
+  const employees = list;
 
   const [sidebarClass, setSidebarClass] = useState("sb-nav-fixed");
 
@@ -27,6 +45,16 @@ function App() {
         : "sb-nav-fixed sb-sidenav-toggled"
     );
   }
+
+  function modification() {
+    modif ? setModif(false) : setModif(true);
+  }
+
+  function ajout() {
+    add ? setAdd(false) : setAdd(true);
+  }
+
+  //console.log(idSelected);
 
   return (
     <div className={sidebarClass}>
@@ -50,15 +78,17 @@ function App() {
                 .
               </Card>
               <Card title="DataTable Example">
-                <EmployeeList items={employees} />
+                <EmployeeList items={employees} boolAdd={ajout} boolMod={modification} selectId={selectId}/>
               </Card>
             </div>
           </main>
           <Footer />
         </div>
       </div>
+      {modif ? <FormulairePut donnee={employees} boolMod={modification} id={idSelected}/> : <div></div>}
+      {add ? <FormulairePost donnee={employees} boolMod={ajout} /> : <div></div>}
     </div>
   );
 }
-
+//{modif?<Formulaire donnee ={employees} mod={modif}/>: <div></div> }
 export default App;

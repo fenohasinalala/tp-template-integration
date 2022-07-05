@@ -1,7 +1,26 @@
+import BoutonType from "../BoutonType";
 import "./style.css";
 
 export function EmployeeList(props) {
   const { items } = props;
+  const { boolMod } = props;
+  const { boolAdd } = props;
+  const { selectId } = props;
+  //console.log("props list: " +props.selectId);
+
+  /*const ClickInfo = () => {
+    console.log("");
+    selectId(items.id - 1);
+    boolMod();
+  }*/
+
+  const ClickInfo = event => {
+    const id = event.currentTarget.getAttribute("data-rowid");
+    console.log(id);
+    selectId(id - 1);
+    boolMod();
+  };
+
   return (
     <div className="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
       <div className="dataTable-top">
@@ -20,11 +39,8 @@ export function EmployeeList(props) {
           </label>
         </div>
         <div className="dataTable-search">
-          <input
-            className="dataTable-input"
-            placeholder="Search..."
-            type="text"
-          />
+          <BoutonType defComponent="AJOUTER" defClass="btn_type" defFunction={boolAdd} />
+
         </div>
       </div>
       <div className="dataTable-container">
@@ -32,32 +48,29 @@ export function EmployeeList(props) {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Position</th>
-              <th>Office</th>
-              <th>Age</th>
-              <th>Start date</th>
-              <th>Salary</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Company</th>
             </tr>
           </thead>
           <tfoot>
             <tr>
               <th>Name</th>
-              <th>Position</th>
-              <th>Office</th>
-              <th>Age</th>
-              <th>Start date</th>
-              <th>Salary</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Company</th>
             </tr>
           </tfoot>
           <tbody>
-            {(items || []).map((item) => (
-              <tr key={item.name}>
+            {(items || []).map((item) => (              
+              <tr key={item.name} data-rowid={item.id} onClick={ClickInfo} className='click'>
                 <td>{item.name}</td>
-                <td>{item.position}</td>
-                <td>{item.office}</td>
-                <td>{item.age}</td>
-                <td>{item.startDate}</td>
-                <td>{item.salary}</td>
+                <td>{item.address.city}</td>
+                <td>{item.phone}</td>
+                <td>{item.email}</td>
+                <td>{item.company.name}</td>
               </tr>
             ))}
           </tbody>
