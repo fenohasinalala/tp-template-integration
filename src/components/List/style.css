@@ -54,3 +54,8 @@ table th:nth-child(6) {
   width: 100%;
   text-align: center;
 }
+
+.click:hover{
+  cursor: pointer;
+
+}
